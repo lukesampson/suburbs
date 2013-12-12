@@ -1,0 +1,9 @@
+{
+	"folders":
+	[
+		{
+			"path": "/Users/luke/projects/go/src/github.com/lukesampson/postcodes",
+			"file_exclude_patterns": [ ".gitignore", "*.sublime-*" ]
+		}
+	]
+}

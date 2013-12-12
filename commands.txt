@@ -1,0 +1,17 @@
+# api ref
+http://en.wikipedia.org/w/api.php
+
+# web view
+http://en.wikipedia.org/wiki/Category:Suburbs_in_Australia
+
+# get category
+http://en.wikipedia.org/w/api.php?action=query&prop=categoryinfo&titles=Category:Suburbs_in_Australia
+
+# get top-level sub-categories
+http://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=Category:Suburbs_in_Australia&cmlimit=500&format=json
+
+# suburbs in Brisbane
+http://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=Category:Suburbs_of_Brisbane&cmlimit=500&format=json
+
+# Cannon Hill
+http://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&pageids=7961428&format=json
