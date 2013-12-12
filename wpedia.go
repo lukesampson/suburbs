@@ -1,8 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"encoding/json"
+	"fmt"
+	"net/http"
 	"regexp"
 )
 
@@ -40,7 +41,12 @@ func parseInfo(text string) *infoBox {
 	return &infoBox { name, data } // infobox name as first element
 }
 
-func subcatsString(text string) []int {
+func getURL(url string) (*http.Response, error) {
+	req := http.NewRequest("GET", url, nil)
+	return http.Do(req)
+}
+
+func parseSubcats(text string) []int {
 	var d interface{}
 	json.Unmarshal([]byte(text), &d)
 

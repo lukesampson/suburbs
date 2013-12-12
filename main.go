@@ -8,9 +8,11 @@ import (
 )
 
 func main() {
-	text, _ := fixture("subcats.json")
-	ids := subcatsString(text)
-	fmt.Println(ids)
+	res, _ := getURL("http://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=Category:Suburbs_in_Australia&cmlimit=500")
+	fmt.Println(res)
+	//text, _ := fixture("subcats.json")
+	//ids := subcatsString(text)
+	//fmt.Println(ids)
 }
 
 func fixture(name string) (string, error) {

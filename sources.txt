@@ -1,0 +1,6 @@
+data sources:
+	http://en.wikipedia.org/wiki/Suburbs_and_localities_(Australia)
+
+	http://www.ga.gov.au/place-names/
+	https://www.ga.gov.au/products/servlet/controller?event=PRODUCT_SELECTION&keyword=gazetteer
+    http://www.icsm.gov.au/cgna/gazetteer.html
