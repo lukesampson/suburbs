@@ -8,9 +8,9 @@ import (
 )
 
 func main() {
-	text, _ := fixture("cannon_hill.txt")
-	info := parseInfo(text)
-	fmt.Println(info)
+	text, _ := fixture("subcats.json")
+	ids := subcatsString(text)
+	fmt.Println(ids)
 }
 
 func fixture(name string) (string, error) {

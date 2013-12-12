@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"encoding/json"
 	"regexp"
 )
 
@@ -37,4 +38,22 @@ func parseInfo(text string) *infoBox {
 	}
 
 	return &infoBox { name, data } // infobox name as first element
+}
+
+func subcatsString(text string) []int {
+	var d interface{}
+	json.Unmarshal([]byte(text), &d)
+
+	query := d.(map[string]interface{})["query"]
+	members := query.(map[string]interface{})["categorymembers"].([]interface{})
+	
+	pageids := make([]int, len(members))
+
+	for i, page := range members {
+		pagemap := page.(map[string]interface{})
+		pageid := pagemap["pageid"].(float64)
+		pageids[i] = int(pageid)
+	}
+
+	return pageids
 }
