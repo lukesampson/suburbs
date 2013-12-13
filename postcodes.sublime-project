@@ -3,7 +3,8 @@
 	[
 		{
 			"path": "../postcodes",
-			"file_exclude_patterns": [ ".gitignore", "*.sublime-*", "postcodes" ]
+			"file_exclude_patterns": [ ".gitignore", "*.sublime-*", "postcodes" ],
+			"binary_file_patterns": [ "*.mdb" ]
 		}
 	]
 }
