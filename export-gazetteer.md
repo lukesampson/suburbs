@@ -1,18 +1,23 @@
-## (Mac OS X)
+## Exporting suburb data from the Australian Gazetteer 2012
 
-1. Download Gazetteer of Australia 2012 from [here](https://www.ga.gov.au/products/servlet/controller?event=GEOCAT_DETAILS&catno=76695)
+These are the steps to generate data/gazetteer2012_suburbs.csv, described here in case you want to re-generate
+this data from scratch.
 
-2. Extract the mdb it contains to data/gazetteer2012.mdb
+1. Install [mdbtools](https://github.com/brianb/mdbtools)
 
-3. Install [mdbtools](https://github.com/brianb/mdbtools)
+	brew install mdbtools # Mac OS X
 
-	brew install mdbtools
+2. Download and extract MDB for the [Gazetteer of Australia 2012](https://www.ga.gov.au/products/servlet/controller?event=GEOCAT_DETAILS&catno=76695)
 
-4. Extract data
+    cd scratch
+    wget http://www-a.ga.gov.au/web_temp/1511008/GazetteerOfAustralia2012Package.zip
+    unzip GazetteerOfAustralia2012Package Gazetteer2012_mdb.mdb
+
+3. Extract MDB data to CSV
 
 Documentation for mdb-sql is [here](https://github.com/brianb/mdbtools/blob/master/doc/mdb-sql.txt).
 
-    mdb-sql -p -F -o data/gazetteer2012_suburbs.csv scratch/gazetteer2012.mdb
+    mdb-sql -p -F -o data/gazetteer2012_suburbs.csv scratch/Gazetteer2012_mdb.mdb
 
     ```sql
     select name, state_id, postcode, latitude, longitude, variant_name, status from tblmain where feat_code = 'SUB'
