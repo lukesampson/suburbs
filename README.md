@@ -8,6 +8,12 @@ If you're reading this, you probably agree that postcode data is useful for a va
 
 So what are the other options? Geoscience Australia publishes the Australian Gazetteer, but it's only updated on a biennial basis in a proprietary format (Microsoft Access). Also, only South Australia, Tasmania and ACT make their postcode data available.
 
-Hopefully the Gazetteer data will get better in future. But in the meantime, we'll rely on Wikipedia to fill in as many gaps as possible.
+Hopefully the Gazetteer data will get better in future. But in the meantime, we'll rely on Wikipedia to fill in some gaps where possible.
 
+# How
 
+These are the steps taken to generate this data
+
+1. Download and extract suburb data from the Australian Gazetteer 2012 ([details](https://github.com/lukesampson/postcodes/blob/master/export-gazetteer.md))
+
+2. Get postcode data from Wikipedia (not implemented yet)
