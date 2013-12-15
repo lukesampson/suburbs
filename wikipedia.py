@@ -1,6 +1,5 @@
 
-import os
-import re
+import json, os, re
 
 def fixture(name):
 	basedir = os.path.dirname(os.path.abspath(__file__))
@@ -24,8 +23,17 @@ def parseinfo(text):
 
 	return name, data
 
+def parsesubcats(text):
+	cm = json.loads(text)['query']['categorymembers']
+	return [(p['title'], p['pageid']) for p in cm]
+
+'''
 text = fixture('cannon_hill.txt')
 name, data = parseinfo(text)
 print(name)
 print(data['postcode'])
-print(data['name'])
+print(data['name'])'''
+
+text = fixture('subcats.json')
+ids = parsesubcats(text)
+print(ids)
