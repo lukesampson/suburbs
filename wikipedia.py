@@ -1,5 +1,4 @@
-
-import json, os, re
+import json, os, re, requests
 
 def fixture(name):
 	basedir = os.path.dirname(os.path.abspath(__file__))
@@ -27,13 +26,10 @@ def parsesubcats(text):
 	cm = json.loads(text)['query']['categorymembers']
 	return [(p['title'], p['pageid']) for p in cm]
 
-'''
-text = fixture('cannon_hill.txt')
-name, data = parseinfo(text)
-print(name)
-print(data['postcode'])
-print(data['name'])'''
+def getapi(query):
+	url = 'http://en.wikipedia.org/w/api.php?' + query
+	headers = { 'User-Agent': 'PostcodeBot/0.1 (+https://github.com/lukesampson/postcodes)' }
+	return requests.get(url, headers=headers).text
 
-text = fixture('subcats.json')
-ids = parsesubcats(text)
-print(ids)
+text = getapi('action=query&list=categorymembers&cmtitle=Category:Suburbs_in_Australia&cmlimit=500&format=json')
+print(text)
