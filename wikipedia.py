@@ -23,13 +23,40 @@ def parseinfo(text):
 	return name, data
 
 def parsesubcats(text):
-	cm = json.loads(text)['query']['categorymembers']
+	j = json.loads(text)
+	if 'error' in j:
+		raise Exception(j['error']['info'])
+	cm = j['query']['categorymembers']#
 	return [(p['title'], p['pageid']) for p in cm]
 
-def getapi(query):
-	url = 'http://en.wikipedia.org/w/api.php?' + query
+def geturl(url):
 	headers = { 'User-Agent': 'PostcodeBot/0.1 (+https://github.com/lukesampson/postcodes)' }
 	return requests.get(url, headers=headers).text
 
-text = getapi('action=query&list=categorymembers&cmtitle=Category:Suburbs_in_Australia&cmlimit=500&format=json')
-print(text)
+def qs(vars):
+	return '?' + '&'.join(['{0}={1}'.format(key, value) for key, value in vars.items()])
+
+def apiurl(vars):
+	return 'http://en.wikipedia.org/w/api.php' + qs(vars)
+
+def subcats(name):
+	vars = { 'cmtitle': 'Category:' + name.replace(' ', '_'), 'action': 'query', 'list': 'categorymembers', 'cmlimit': 500, 'cmtype': 'subcat', 'format': 'json'}
+	url = apiurl(vars)
+	try:
+		return parsesubcats(geturl(url))
+	except Exception as err:
+		raise Exception("error loading {}".format(url))
+
+def catpages(pageid):
+	vars = { 'cmpageid': pageid, 'action': 'query', 'list': 'categorymembers', 'cmlimit': 500, 'cmtype': 'page', 'format': 'json'}
+	url = apiurl(vars)
+	return parsesubcats(geturl(url))
+
+cats = subcats('Suburbs in Australia')
+print('found {} top-level categories'.format(len(cats)))
+
+for cat, pageid in cats:
+	p = catpages(pageid)
+	print('found {} pages for {}'.format(len(p), cat))
+
+
