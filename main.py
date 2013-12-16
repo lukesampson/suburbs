@@ -7,8 +7,10 @@ for cat, catid in cats:
 	pages = wp.catpages(catid)
 	print('found {} pages for {}'.format(len(pages), cat))
 	for page, pageid in pages:
-		print("loading {}...".format(page))
 		text = wp.pagetext(pageid)
 		infotype, data = wp.parseinfo(text)
 		if infotype:
-			print("{},{},{}".format(data['name'],data['state'],data['postcode']))
+			name, city, state, postcode = wp.extractdata(data)
+			print("{},{},{},{}".format(name,city,state,postcode))
+		else:
+			print('skipped {}'.format(page))

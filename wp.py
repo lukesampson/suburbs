@@ -56,4 +56,21 @@ def pagetext(pageid):
 	url = apiurl(vars)
 	return parsetext(geturl(url), pageid)
 
+def striptags(text):
+	if not text:
+		return text
+
+	return re.sub(r'<(\w+).*?((?:</\1>)|$)', '', text)
+
+
+def extractdata(data):
+	name = data.get('name')
+	city = data.get('city')
+	state = data.get('state')
+	postcode = striptags(data.get('postcode'))
+
+	return name, city, state, postcode
+
+
+
 
