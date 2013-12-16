@@ -6,13 +6,13 @@ def fixture(name):
 	return f.read()
 
 def parseinfo(text):
-	match = re.search('(?:^|\n){{Infobox *([^\n]*)(\n *\|[^\n]*)*\n}}', text)
+	match = re.search('(?:^|\n){{Infobox *([^\n|]*)[^\n]*(\n *\|[^\n]*)*\n}}', text)
 	if not match:
-		return None
+		return None, None
 
-	name = match.group(1)
+	name = match.group(1).strip()
 	infotext = match.group(0)
-	lines = re.findall('(?m)^ *\|[^\n]*$', infotext)
+	lines = re.findall('\|[^\n]*', infotext)
 
 	data = {}
 	for line in lines:
@@ -52,11 +52,27 @@ def catpages(pageid):
 	url = apiurl(vars)
 	return parsesubcats(geturl(url))
 
+def parsetext(jsontext, pageid):
+	j = json.loads(jsontext)
+	return j['query']['pages'][str(pageid)]['revisions'][0]['*']
+
+def pagetext(pageid):
+	vars = { 'pageids': pageid, 'action': 'query', 'prop':'revisions', 'rvprop': 'content', 'format': 'json'}
+	url = apiurl(vars)
+	return parsetext(geturl(url), pageid)
+
+
 cats = subcats('Suburbs in Australia')
 print('found {} top-level categories'.format(len(cats)))
 
-for cat, pageid in cats:
-	p = catpages(pageid)
-	print('found {} pages for {}'.format(len(p), cat))
+for cat, catid in cats:
+	pages = catpages(catid)
+	print('found {} pages for {}'.format(len(pages), cat))
+	for page, pageid in pages:
+		print("loading {}...".format(page))
+		text = pagetext(pageid)
+		infotype, data = parseinfo(text)
+		if infotype:
+			print("{},{},{}".format(data['name'],data['state'],data['postcode']))
 
 
