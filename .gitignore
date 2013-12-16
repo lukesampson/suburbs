@@ -1,3 +1,4 @@
 postcodes
 *.sublime-workspace
 scratch/*
+__pycache__/*
