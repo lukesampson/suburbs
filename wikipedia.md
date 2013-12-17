@@ -5,7 +5,5 @@ Prerequisites:
     `pip install requests`
 * pytest
     `pip install pytest`
-* ply
-    `pip install ply`
 
 	

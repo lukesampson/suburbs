@@ -1,11 +1,9 @@
 import lex
 
 def parse(input):
-	output = []
-	
 	items = lex.lex(input)
 	
-	
+
 
 
 test = """hello
@@ -21,3 +19,5 @@ It is located in the [[City of Playford]]."""
 
 for item in parse(test):
 	print(item)
+
+# for i in content.items where i[0] == 'template'
