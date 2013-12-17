@@ -1,15 +1,6 @@
-test = """hello
-{{Use dmy dates|date=October 2012}}
-{{Infobox Australian place
-| name                = Blakeview
-| city                = Adelaide {{Census 2001 AUS |id =SSC41151 |name=Blakeview (State Suburb) |accessdate=20 April 2011 | quick=on}}
-| state               = sa}}
-
-'''Blakeview''' is a northern [[Suburbs and localities (Australia)|suburb]] of [[Adelaide]], [[South Australia]].
-It is located in the [[City of Playford]]."""
-
 LEFT_DELIM = '{{'
 RIGHT_DELIM = '}}'
+PARAM_DELIM = '|'
 
 class Lexer:
 	input = ''
@@ -26,6 +17,7 @@ class Lexer:
 	def eof(self):
 		return self.pos >= len(self.input)
 
+	# get the next character
 	def next(self):
 		if self.eof():
 			return None
@@ -34,17 +26,22 @@ class Lexer:
 		self.pos += 1
 		return n
 
-	# returns true if full value can be accepted at this point
-	def can_accept(self, value):
+	# checks whether <value> is ahead
+	def ahead(self, value):
 		if self.eof():
 			return False
 
 		return self.input.startswith(value, self.pos)
 
+	def which_ahead(self, *values):
+		for value in values:
+			if self.ahead(value): return value
+		return None
+
 
 def lex_text(l):
 	while True:
-		if l.can_accept(LEFT_DELIM):
+		if l.ahead(LEFT_DELIM):
 			if l.pos > l.start:
 				l.emit('text')
 
@@ -65,21 +62,25 @@ def lex_left_tmpl(l):
 
 def lex_inside_tmpl(l):
 	while True:
-		if l.can_accept(LEFT_DELIM):
+		which = l.which_ahead(LEFT_DELIM, RIGHT_DELIM, PARAM_DELIM)
+		if which:
 			if l.pos > l.start:
-				l.emit('text') # text inside template
+				l.emit('param')
 
-			return lex_left_tmpl
-		elif l.can_accept(RIGHT_DELIM):
-			if l.pos > l.start:
-				l.emit('text')
-			return lex_right_tmpl
+			if which == LEFT_DELIM:  return lex_left_tmpl
+			if which == RIGHT_DELIM: return lex_right_tmpl
+			if which == PARAM_DELIM: return lex_param_delim
 
 		if l.next() is None: break
 
 	# reached EOF (input is invalid)
 	if(l.pos > l.start): l.emit('text')
 	return None
+
+def lex_param_delim(l):
+	l.pos += len(PARAM_DELIM)
+	l.emit('param_delim')
+	return lex_inside_tmpl
 
 def lex_right_tmpl(l):
 	l.pos += len(RIGHT_DELIM)
@@ -98,9 +99,4 @@ def lex(input):
 		state = state(lexer)
 
 	return lexer.items
-
-items = lex(test)
-for item in items:
-	print(item)
-
 	
