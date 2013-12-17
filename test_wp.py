@@ -1,9 +1,7 @@
-import wp, os
+import wp, util
 
 def fixture(name):
-	basedir = os.path.dirname(os.path.abspath(__file__))
-	f = open(os.path.join(basedir, 'fixtures', name))
-	return f.read()
+	return util.readtext('fixtures', name)
 
 def test_normal_infobox():
 	name, data = wp.parseinfo(fixture('cannon_hill.txt'))

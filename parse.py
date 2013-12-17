@@ -16,11 +16,6 @@ class Parser:
 	def backup(self):
 		self.pos -= 1
 
-	def peek(self):
-		n = self.next()
-		self.backup()
-		return n
-
 def parse_token(t, p):
 	type = t[0]
 	if type == 'text':
@@ -55,7 +50,9 @@ def parse_tmpl(p):
 
 		tok = p.next()
 
-	# convert params list to data dict
+	return ('template', name, param_data(params))
+
+def param_data(params):
 	data = {}
 	for param in params:
 		clean = param.strip()
@@ -68,9 +65,9 @@ def parse_tmpl(p):
 		else:
 			data[clean] = None
 
-	return ('template', name, data)
+	return data
 
-# for nested templates, just serialize them back to text to
+# for nested templates, just serialize them back to text
 def serialize_tmpl(p):
 	tok = p.next()
 	nest_level = 1
@@ -98,52 +95,3 @@ def parse(input):
 		tok = parser.next()
 
 	return parser.items
-
-example = """
-('text', 'hello\n')
-('left_tmpl', '{{')
-('param', 'Use dmy dates')
-('param_delim', '|')
-('param', 'date=October 2012')
-('right_tmpl', '}}')
-('text', '\n')
-('left_tmpl', '{{')
-('param', 'Infobox Australian place\n')
-('param_delim', '|')
-('param', ' name                = Blakeview\n')
-('param_delim', '|')
-('param', ' city                = Adelaide ')
-('left_tmpl', '{{')
-('param', 'Census 2001 AUS ')
-('param_delim', '|')
-('param', 'id =SSC41151 ')
-('param_delim', '|')
-('param', 'name=Blakeview (State Suburb) ')
-('param_delim', '|')
-('param', 'accessdate=20 April 2011 ')
-('param_delim', '|')
-('param', ' quick=on')
-('right_tmpl', '}}')
-('param', '\n')
-('param_delim', '|')
-('param', ' state               = sa')
-('right_tmpl', '}}')
-('text', "\n\n'''Blakeview''' is a northern [[Suburbs and localities (Australia)|suburb]] of [[Adelaide]], [[South Australia]].\nIt is located in the [[City of Playford]].")
-"""
-
-
-test = """hello
-{{Use dmy dates|date=October 2012}}
-{{Infobox Australian place
-| name                = Blakeview
-| city                = Adelaide {{Census 2001 AUS |id =SSC41151 |name=Blakeview (State Suburb) |accessdate=20 April 2011 | quick=on}}
-| state               = sa}}
-
-'''Blakeview''' is a northern [[Suburbs and localities (Australia)|suburb]] of [[Adelaide]], [[South Australia]].
-It is located in the [[City of Playford]]."""
-
-
-for item in parse(test):
-	print(item)
-
-
