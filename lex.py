@@ -1,3 +1,7 @@
+# based on Rob Pike's talk “Lexical scanning in Go”
+# http://youtu.be/HxaD_trXwRE
+# http://golang.org/src/pkg/text/template/parse/lex.go
+
 LEFT_DELIM = '{{'
 RIGHT_DELIM = '}}'
 PARAM_DELIM = '|'
