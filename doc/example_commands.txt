@@ -13,5 +13,8 @@ http://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=Cate
 # suburbs in Brisbane
 http://en.wikipedia.org/w/api.php?action=query&list=categorymembers&cmtitle=Category:Suburbs_of_Brisbane&cmlimit=500&format=json
 
-# Cannon Hill
-http://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&pageids=7961428&format=json
+# page by ID
+http://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&format=json&pageids=7961428
+
+# page by title
+http://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&format=json&titles=Template:Hobart localities

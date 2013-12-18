@@ -28,3 +28,11 @@ def test_text():
 	assert len(items) == 1
 	
 	assert_text(items[0], 'some text')
+
+# not handled: just skip templates
+'''
+def test_template_param():
+	test = "{{{Here|{{{here}}}}}}"
+
+	items = parse.parse(test)
+'''
