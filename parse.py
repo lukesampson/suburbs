@@ -1,9 +1,10 @@
 import lex
 
 class Parser:
-	input = []
-	pos = 0
-	items = []
+	def __init__(self):
+		self.input = []
+		self.pos = 0
+		self.items = []
 
 	def next(self):
 		if self.pos >= len(self.input):
@@ -32,7 +33,6 @@ def parse_tmpl(p):
 
 	tok = p.next()
 	while tok:
-		#print(tok)
 		if tok[0] == 'param':
 			if not name:
 				name = tok[1].strip() # first param is name

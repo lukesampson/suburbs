@@ -1,19 +1,13 @@
-import json, os, re, requests
+import json, os, parse, re, requests
 
 def parseinfo(text):
-	match = re.search('(?:^|\n){{Infobox *([^\n|]*)[^\n]*(\n *\|[^\n]*)*\n}}', text)
-	if not match:
+	items = parse.parse(text)
+	infos = [i for i in items if i[0] == 'template' and i[1].startswith('Infobox')]
+	if len(infos) == 0:
 		return None, None
 
-	name = match.group(1).strip()
-	infotext = match.group(0)
-	lines = re.findall('\|[^\n]*', infotext)
-
-	data = {}
-	for line in lines:
-		linematch = re.match('\| *([^ ]+) *= *(.*)', line)
-		if linematch:
-			data[linematch.group(1)] = linematch.group(2)
+	_, name, data = infos[0]
+	name = re.sub('^Infobox ', '', name)
 
 	return name, data
 
@@ -47,20 +41,20 @@ def catpages(pageid):
 	url = apiurl(vars)
 	return parsesubcats(geturl(url))
 
-def parsetext(jsontext, pageid):
+def pagetext_from_json(jsontext, pageid):
 	j = json.loads(jsontext)
 	return j['query']['pages'][str(pageid)]['revisions'][0]['*']
 
 def pagetext(pageid):
 	vars = { 'pageids': pageid, 'action': 'query', 'prop':'revisions', 'rvprop': 'content', 'format': 'json'}
 	url = apiurl(vars)
-	return parsetext(geturl(url), pageid)
+	return pagetext_from_json(geturl(url), pageid)
 
 def striptags(text):
 	if not text:
 		return text
 
-	return re.sub(r'<(\w+).*?((?:</\1>)|$)', '', text)
+	return re.sub(r'(?s)<(\w+).*?((?:</\1>)|$)', '', text)
 
 
 def extractdata(data):

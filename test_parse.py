@@ -17,6 +17,14 @@ def test_parse_template_then_text():
 
 	items = parse.parse(test)
 	assert len(items) == 2
-	
+
 	assert_template(items[0], 'parent', { 'param': 'with nested {{child | test}}'})
 	assert_text(items[1], 'some text')
+
+def test_text():
+	test = "some text"
+
+	items = parse.parse(test)
+	assert len(items) == 1
+	
+	assert_text(items[0], 'some text')

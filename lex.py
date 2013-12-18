@@ -7,11 +7,12 @@ RIGHT_DELIM = '}}'
 PARAM_DELIM = '|'
 
 class Lexer:
-	input = ''
-	start = 0
-	pos = 0
-	delim_depth = 0 # depth of template delimiters
-	items = []
+	def __init__(self):
+		self.input = ''
+		self.start = 0
+		self.pos = 0
+		self.delim_depth = 0 # depth of template delimiters
+		self.items = []
 
 	def emit(self, type):
 		val = self.input[self.start:self.pos]

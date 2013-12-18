@@ -32,16 +32,18 @@ def test_strip_tags():
 	unclosed_tag = '5114<ref name=Postcodes>{{cite web |url=http://www.postcodes-australia.com/areas/sa/adelaide/blakeview'
 	assert wp.striptags(unclosed_tag) == '5114'
 
+	multiline_tag = "5114<ref>line 1\nline 2</ref>"
+	assert wp.striptags(multiline_tag) == '5114'
+
+
 def test_postcode_with_ref():
-	text = wp.parsetext(fixture('beverley.json'), 24011354)
+	text = wp.pagetext_from_json(fixture('beverley.json'), 24011354)
 	_, data = wp.parseinfo(text)
 	_,_,_,postcode = wp.extractdata(data)
 	assert postcode == '5009'
 
-	'''
-	text = wp.parsetext(fixture('blakeview.json'), 31548825)
+	text = wp.pagetext_from_json(fixture('blakeview.json'), 31548825)
 	_, data = wp.parseinfo(text)
 	_,_,_,postcode = wp.extractdata(data)
 
 	assert postcode == '5114'
-	'''
