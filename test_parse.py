@@ -29,6 +29,13 @@ def test_text():
 	
 	assert_text(items[0], 'some text')
 
+def test_nested_template_as_first_param():
+	test = "{{small|{{ref|fedelec}}}}"
+	items = parse.parse(test)
+
+	assert len(items) == 1
+	assert_template(items[0], "small", { '{{ref|fedelec}}': None })
+
 # not handled: just skip templates
 '''
 def test_template_param():

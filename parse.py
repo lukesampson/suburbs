@@ -44,6 +44,8 @@ def parse_tmpl(p):
 			break
 		elif tok[0] == 'left_tmpl':
 			p.backup()
+			if len(params) == 0:
+				params.append('') # ensure at least one param
 			params[-1] += serialize_tmpl(p) # add to last param
 		else:
 			raise Exception("unexpected token {} ({})".format(tok[0], p.pos))
