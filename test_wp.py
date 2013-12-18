@@ -19,10 +19,13 @@ def test_infobox_without_padding_after_bars():
 	assert 'name' in data
 	assert data['name'] == 'Craigmore'
 	assert data['city'] == 'Adelaide'
-'''
+
+
 def test_infobox_endtag_without_newline():
 	name, data = wp.parseinfo(fixture('seaford_heights.txt'))
-	assert name'''
+	assert name == 'Australian place'
+	assert 'location1' in data # last infobox param before closing delim
+	assert data.get('name') == 'Seaford Heights'
 
 
 def test_strip_tags():
