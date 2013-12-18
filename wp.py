@@ -19,7 +19,7 @@ def parsesubcats(text):
 	return [(p['title'], p['pageid']) for p in cm]
 
 def geturl(url):
-	headers = { 'User-Agent': 'PostcodeBot/0.1 (+https://github.com/lukesampson/postcodes)' }
+	headers = { 'User-Agent': 'SuburbBot/0.1 (+https://github.com/lukesampson/suburbs)' }
 	return requests.get(url, headers=headers).text
 
 def qs(vars):
