@@ -5,5 +5,21 @@ def relpath(*path):
 	return os.path.join(basedir, *path)
 
 def readtext(*path):
-	f = open(relpath(*path))
-	return f.read()
+	path = relpath(*path)
+	if not os.path.exists(path):
+		return None
+
+	f = open(path, 'r')
+	text = f.read()
+	f.close()
+	return text
+
+def writetext(text, *path):
+	path = relpath(*path)
+	dir = os.path.dirname(path)
+	if not os.path.exists(dir):
+		os.makedirs(dir)
+
+	f = open(path, 'w')
+	f.write(text)
+	f.close()

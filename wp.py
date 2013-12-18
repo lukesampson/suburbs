@@ -1,4 +1,4 @@
-import json, os, parse, re, requests
+import json, os, parse, re, requests, util
 
 def parseinfo(text):
 	items = parse.parse(text)
@@ -45,10 +45,22 @@ def pagetext_from_json(jsontext, pageid):
 	j = json.loads(jsontext)
 	return j['query']['pages'][str(pageid)]['revisions'][0]['*']
 
+def cached_pagetext(pageid):
+	return util.readtext('scratch', 'cache', str(pageid) + '.txt')
+
+def cache_pagetext(pageid, text):
+	util.writetext(text, 'scratch', 'cache', str(pageid) + '.txt')
+
 def pagetext(pageid):
+	cached = cached_pagetext(pageid)
+	if cached is not None:
+		return cached
+
 	vars = { 'pageids': pageid, 'action': 'query', 'prop':'revisions', 'rvprop': 'content', 'format': 'json'}
 	url = apiurl(vars)
-	return pagetext_from_json(geturl(url), pageid)
+	text = pagetext_from_json(geturl(url), pageid)
+	cache_pagetext(pageid, text)
+	return text
 
 def striptags(text):
 	if not text:
