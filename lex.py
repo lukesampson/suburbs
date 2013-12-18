@@ -4,14 +4,16 @@
 
 LEFT_DELIM = '{{'
 RIGHT_DELIM = '}}'
-PARAM_DELIM = '|'
+PIPE = '|'
+LEFT_LINK_DELIM = '[['
+RIGHT_LINK_DELIM = '[['
 
 class Lexer:
 	def __init__(self):
 		self.input = ''
 		self.start = 0
 		self.pos = 0
-		self.delim_depth = 0 # depth of template delimiters
+		self.tmpl_depth = 0 # depth of template delimiters
 		self.items = []
 
 	def emit(self, type):
@@ -60,21 +62,24 @@ def lex_text(l):
 
 def lex_left_tmpl(l):
 	l.pos += len(LEFT_DELIM)
-	l.delim_depth += 1
+	l.tmpl_depth += 1
 	l.emit('left_tmpl')
 
 	return lex_inside_tmpl
 
 def lex_inside_tmpl(l):
 	while True:
-		which = l.which_ahead(LEFT_DELIM, RIGHT_DELIM, PARAM_DELIM)
+		# print("next: {}".format(l.input[l.pos]))
+		which = l.which_ahead(LEFT_DELIM, RIGHT_DELIM, PIPE, LEFT_LINK_DELIM)
 		if which:
 			if l.pos > l.start:
 				l.emit('param')
 
 			if which == LEFT_DELIM:  return lex_left_tmpl
 			if which == RIGHT_DELIM: return lex_right_tmpl
-			if which == PARAM_DELIM: return lex_param_delim
+			if which == PIPE: return lex_param_delim
+			if which == LEFT_LINK_DELIM: raise Exception('links not implemented!')
+
 
 		if l.next() is None: break
 
@@ -83,16 +88,16 @@ def lex_inside_tmpl(l):
 	return None
 
 def lex_param_delim(l):
-	l.pos += len(PARAM_DELIM)
+	l.pos += len(PIPE)
 	l.emit('param_delim')
 	return lex_inside_tmpl
 
 def lex_right_tmpl(l):
 	l.pos += len(RIGHT_DELIM)
-	l.delim_depth -= 1
+	l.tmpl_depth -= 1
 	l.emit('right_tmpl')
 
-	if l.delim_depth == 0: return lex_text
+	if l.tmpl_depth == 0: return lex_text
 	return lex_inside_tmpl
 
 def lex(input):
