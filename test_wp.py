@@ -50,3 +50,15 @@ def test_postcode_with_ref():
 	_,_,_,postcode = wp.extractdata(data)
 
 	assert postcode == '5114'
+
+def test_strip_link():
+	assert wp.striplinks('[[test]]') == 'test'
+
+def test_strip_link_among_text():
+	assert wp.striplinks('before [[test]]after') == 'before testafter'
+
+def test_strip_multi_links():
+	assert wp.striplinks('a [[test]]ing [[two]]') == 'a testing two'
+
+def test_strip_piped_link():
+	assert wp.striplinks('[[full|short]]') == 'short'

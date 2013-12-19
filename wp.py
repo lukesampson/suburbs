@@ -63,17 +63,25 @@ def pagetext(pageid):
 	return text
 
 def striptags(text):
-	if not text:
-		return text
+	if not text: return text
 
 	return re.sub(r'(?s)<(\w+).*?((?:</\1>)|$)', '', text)
 
+def linksub(match):
+	if match.group(2):
+		piped = match.group(2)[1:]
+		if piped: return piped
+	return match.group(1)
+
+def striplinks(text):
+	if not text: return text
+	return re.sub(r'\[\[(.*?)(\|.*?)?\]\]', linksub, text)
 
 def extractdata(data):
 	name = data.get('name')
-	city = data.get('city')
-	state = data.get('state')
-	postcode = striptags(data.get('postcode'))
+	city = striplinks(data.get('city'))
+	state = striplinks(data.get('state'))
+	postcode = striplinks(striptags(data.get('postcode')))
 
 	return name, city, state, postcode
 
