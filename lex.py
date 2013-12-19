@@ -33,17 +33,12 @@ class Lexer:
 		self.pos += 1
 		return n
 
-	# checks whether <value> is ahead
+	# check whether <value> is ahead
 	def ahead(self, value):
 		if self.eof():
 			return False
 
 		return self.input.startswith(value, self.pos)
-
-	def which_ahead(self, *values):
-		for value in values:
-			if self.ahead(value): return value
-		return None
 
 
 def lex_text(l):
@@ -72,15 +67,14 @@ def lex_inside_tmpl(l):
 		if l.ahead(LEFT_LINK_DELIM):
 			return lex_link
 
-		which = l.which_ahead(LEFT_DELIM, RIGHT_DELIM, PIPE)
-		if which:
-			if l.pos > l.start:
-				l.emit('param')
+		for check in (LEFT_DELIM, RIGHT_DELIM, PIPE):
+			if l.ahead(check):
+				if l.pos > l.start:
+					l.emit('param')
 
-			if which == LEFT_DELIM:  return lex_left_tmpl
-			if which == RIGHT_DELIM: return lex_right_tmpl
-			if which == PIPE: return lex_param_delim
-
+				if check == LEFT_DELIM:  return lex_left_tmpl
+				if check == RIGHT_DELIM: return lex_right_tmpl
+				if check == PIPE: return lex_param_delim
 
 		if l.next() is None: break
 
