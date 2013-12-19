@@ -17,6 +17,11 @@ class Parser:
 	def backup(self):
 		self.pos -= 1
 
+	def peek(self):
+		n = self.next()
+		self.backup()
+		return n
+
 def parse_token(t, p):
 	type = t[0]
 	if type == 'text':

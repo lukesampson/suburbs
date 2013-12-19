@@ -6,7 +6,7 @@ LEFT_DELIM = '{{'
 RIGHT_DELIM = '}}'
 PIPE = '|'
 LEFT_LINK_DELIM = '[['
-RIGHT_LINK_DELIM = '[['
+RIGHT_LINK_DELIM = ']]'
 
 class Lexer:
 	def __init__(self):
@@ -69,8 +69,10 @@ def lex_left_tmpl(l):
 
 def lex_inside_tmpl(l):
 	while True:
-		# print("next: {}".format(l.input[l.pos]))
-		which = l.which_ahead(LEFT_DELIM, RIGHT_DELIM, PIPE, LEFT_LINK_DELIM)
+		if l.ahead(LEFT_LINK_DELIM):
+			return lex_link
+
+		which = l.which_ahead(LEFT_DELIM, RIGHT_DELIM, PIPE)
 		if which:
 			if l.pos > l.start:
 				l.emit('param')
@@ -78,7 +80,6 @@ def lex_inside_tmpl(l):
 			if which == LEFT_DELIM:  return lex_left_tmpl
 			if which == RIGHT_DELIM: return lex_right_tmpl
 			if which == PIPE: return lex_param_delim
-			if which == LEFT_LINK_DELIM: raise Exception('links not implemented!')
 
 
 		if l.next() is None: break
@@ -99,6 +100,19 @@ def lex_right_tmpl(l):
 
 	if l.tmpl_depth == 0: return lex_text
 	return lex_inside_tmpl
+
+def lex_link(l):
+	l.pos += len(LEFT_LINK_DELIM)
+	while True:
+		if l.ahead(RIGHT_LINK_DELIM):
+			l.pos += len(RIGHT_LINK_DELIM)
+			return lex_inside_tmpl # don't emit link, treat it as part of the param
+
+		if l.next() is None: break
+
+	# reached EOF (invalid input)
+	if l.pos > l.start: l.emit('text')
+	return None
 
 def lex(input):
 	lexer = Lexer()

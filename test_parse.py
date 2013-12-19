@@ -36,17 +36,16 @@ def test_nested_template_as_first_param():
 	assert len(items) == 1
 	assert_template(items[0], "small", { '{{ref|fedelec}}': None })
 
+def test_template_param_with_link():
+	test = "{{test|param=test [[link]]}}"
+	items = parse.parse(test)
+
+	assert len(items) == 1
+	assert_template(items[0], "test", { 'param': 'test [[link]]' })
+
 def test_template_param_has_link_with_pipe():
 	test = "{{test|param=[[link|]]}}"
 	items = parse.parse(test)
 
 	assert len(items) == 1
 	assert_template(items[0], "test", { 'param': '[[link|]]' })
-
-# not handled: just skip templates
-'''
-def test_template_param():
-	test = "{{{Here|{{{here}}}}}}"
-
-	items = parse.parse(test)
-'''
