@@ -68,8 +68,8 @@ def striptags(text):
 def htmltext(html):
 	if not html: return html
 
-	text = re.sub(r'<[^>]*>', '', html)
-	text = re.sub(r'(?s)<!--.*?-->', '', text)
+	text = re.sub(r'<[^>]*>', '', html)         # tags
+	text = re.sub(r'(?s)<!--.*?-->', '', text)  #comments
 	return text
 
 
