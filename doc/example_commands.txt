@@ -28,6 +28,9 @@ http://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&tit
 (wikipedia page)
 http://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&format=jsonfm&titles=Hamilton,%20Queensland
 
+# Get wikipedia to parse it
+http://en.wikipedia.org/w/api.php?action=parse&text={{%23property:p281}}&title=Hamilton,%20Queensland&prop=text&format=json
+
 # Get properties for Hamilton, Queensland
 https://www.wikidata.org/w/api.php?action=wbgetentities&sites=enwiki&titles=Hamilton,%20Queensland&languages=en&format=jsonfm
 

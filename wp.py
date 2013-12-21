@@ -1,4 +1,5 @@
 import json, os, parse, re, requests, util
+import urllib.parse
 
 def parseinfo(text):
 	items = parse.parse(text)
@@ -22,11 +23,8 @@ def geturl(url):
 	headers = { 'User-Agent': 'SuburbBot/0.1 (+https://github.com/lukesampson/suburbs)' }
 	return requests.get(url, headers=headers).text
 
-def qs(vars):
-	return '?' + '&'.join(['{0}={1}'.format(key, value) for key, value in vars.items()])
-
 def apiurl(vars):
-	return 'http://en.wikipedia.org/w/api.php' + qs(vars)
+	return 'http://en.wikipedia.org/w/api.php?' + urllib.parse.urlencode(vars)
 
 def subcats(name):
 	vars = { 'cmtitle': 'Category:' + name.replace(' ', '_'), 'action': 'query', 'list': 'categorymembers', 'cmlimit': 500, 'cmtype': 'subcat', 'format': 'json'}
@@ -62,10 +60,18 @@ def pagetext(pageid):
 	cache_pagetext(pageid, text)
 	return text
 
+# strips tags, and anything inside the tags too
 def striptags(text):
 	if not text: return text
-
 	return re.sub(r'(?s)<(\w+).*?((?:</\1>)|$)', '', text)
+
+def htmltext(html):
+	if not html: return html
+
+	text = re.sub(r'<[^>]*>', '', html)
+	text = re.sub(r'(?s)<!--.*?-->', '', text)
+	return text
+
 
 def linksub(match):
 	if match.group(2):
@@ -77,11 +83,24 @@ def striplinks(text):
 	if not text: return text
 	return re.sub(r'\[\[(.*?)(\|.*?)?\]\]', linksub, text)
 
-def extractdata(data):
+def parsewikitext(text, pagetitle):
+	url = apiurl({ 'action': 'parse', 'text': text, 'title': pagetitle, 'prop': 'text', 'format': 'json'})
+	res = geturl(url)
+	j = json.loads(res)
+	return j['parse']['text']['*']
+
+
+def extractdata(data, pagetitle):
 	name = data.get('name')
 	city = striplinks(data.get('city'))
 	state = striplinks(data.get('state'))
 	postcode = striplinks(striptags(data.get('postcode')))
+
+	if postcode and re.match(r'\{\{.*?\}\}', postcode):
+		# might be {{#property:p281}}: get wikipedia to parse to text and use that
+		postcode = parsewikitext(postcode, pagetitle)
+		postcode = htmltext(postcode).strip()
+
 
 	return name, city, state, postcode
 
