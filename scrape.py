@@ -20,5 +20,8 @@ for cat, catid in cats:
 		if infotype:
 			name, city, state, postcode = wp.extractdata(data, title)
 			print("{},{},{},{}".format(name,city,state,postcode))
+
+			if not name:
+				print('DEBUG: {} (page id {}) doesn''t have suburb name in infobox'.format(title, pageid))
 		else:
 			print('skipped {}'.format(title))
