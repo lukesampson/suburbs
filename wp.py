@@ -69,8 +69,8 @@ def htmltext(html):
 	if not html: return html
 
 	text = re.sub(r'<[^>]*>', '', html)         # tags
-	text = re.sub(r'(?s)<!--.*?-->', '', text)  #comments
-	return text
+	text = re.sub(r'(?s)<!--.*?-->', '', text)  # comments
+	return text.strip()
 
 
 def linksub(match):
@@ -93,13 +93,13 @@ def parsewikitext(text, pagetitle):
 def extractdata(data, pagetitle):
 	name = data.get('name')
 	city = striplinks(data.get('city'))
-	state = striplinks(data.get('state'))
+	state = striplinks(striptags(data.get('state'))) # should only have abbreviation, strip anything else
 	postcode = striplinks(striptags(data.get('postcode')))
 
 	if postcode and re.match(r'\{\{.*?\}\}', postcode):
 		# might be {{#property:p281}}: get wikipedia to parse to text and use that
 		postcode = parsewikitext(postcode, pagetitle)
-		postcode = htmltext(postcode).strip()
+		postcode = htmltext(postcode)
 
 
 	return name, city, state, postcode

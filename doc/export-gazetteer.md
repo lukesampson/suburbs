@@ -9,12 +9,6 @@ this data from scratch.
 
 2. Download and extract MDB for the [Gazetteer of Australia 2012](https://www.ga.gov.au/products/servlet/controller?event=GEOCAT_DETAILS&catno=76695)
 
-	```
-	cd scratch
- 	wget http://www-a.ga.gov.au/web_temp/1511008/GazetteerOfAustralia2012Package.zip
- 	unzip GazetteerOfAustralia2012Package Gazetteer2012_mdb.mdb
-	```
-
 3. Extract MDB data to CSV
 
 Documentation for mdb-sql is [here](https://github.com/brianb/mdbtools/blob/master/doc/mdb-sql.txt).
