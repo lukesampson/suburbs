@@ -7,6 +7,8 @@ RIGHT_DELIM = '}}'
 PIPE = '|'
 LEFT_LINK_DELIM = '[['
 RIGHT_LINK_DELIM = ']]'
+LEFT_COMMENT_DELIM = '<!--'
+RIGHT_COMMENT_DELIM = '-->'
 
 class Lexer:
 	def __init__(self):
@@ -43,11 +45,13 @@ class Lexer:
 
 def lex_text(l):
 	while True:
-		if l.ahead(LEFT_DELIM):
-			if l.pos > l.start:
-				l.emit('text')
+		for check in (LEFT_DELIM, LEFT_COMMENT_DELIM):
+			if l.ahead(check):
+				if l.pos > l.start:
+					l.emit('text')
 
-			return lex_left_tmpl
+				if check == LEFT_DELIM:	return lex_left_tmpl
+				if check == LEFT_COMMENT_DELIM: return lex_comment
 
 		if l.next() is None: break
 
@@ -105,6 +109,22 @@ def lex_link(l):
 		if l.next() is None: break
 
 	# reached EOF (invalid input)
+	if l.pos > l.start: l.emit('text')
+	return None
+
+def lex_comment(l):
+	l.pos += len(LEFT_COMMENT_DELIM)
+	l.emit('left_comment')
+	while True:
+		if l.ahead(RIGHT_COMMENT_DELIM):
+			l.emit('comment')
+			l.pos += len(RIGHT_COMMENT_DELIM)
+			l.emit('right_comment')
+			return lex_text
+
+		if l.next() is None: break
+
+	#reached EOF (invalid input)
 	if l.pos > l.start: l.emit('text')
 	return None
 
